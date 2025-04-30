@@ -1,0 +1,95 @@
+spring:
+  application:
+    name: LotterySystem
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/lottery_system?characterEncoding=utf8&useSSL=false
+    username: root
+    password: woshizjy12138
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # redis配置
+  data:
+    redis:
+      host: localhost # Redis 主机地址（这里是本地，也可能是 SSH 隧道）
+      port: 8888       # Redis 端口号（这里通过本地 8888 映射远程 Redis 端口）
+      timeout: 60s     # 连接空闲超时时间（单位：s秒、ms毫秒），0 表示禁用
+      lettuce:
+        pool:
+          max-active: 8   # 最大连接数（默认 8，负数表示不限制）
+          max-idle: 8     # 最大空闲连接数（默认 8）
+          min-idle: 0     # 最小空闲连接数（默认 0）
+          max-wait: 5s    # 连接耗尽时的最大等待时间（单位：s秒、ms毫秒），超过抛异常
+
+  # 静态路径资源配置
+  web:
+    resources:
+      static-locations:
+        - classpath:/static/
+        - file:${pic.local-path}
+
+  # rabbitmq配置
+  rabbitmq:
+    host: 47.120.65.116
+    port: 5672  #默认为5672
+    username: admin
+    password: admin
+    virtual-host: LotterySystem
+    # 配置确认方式
+    listener:
+      simple:
+        acknowledge-mode: auto
+        retry:
+          enabled: true # 开启消费者失败重试
+          max-attempts: 5 # 最大重试次数(包括自身消费的一次)
+
+  mail:
+    host: smtp.qq.com
+    username: 2523711871@qq.com
+    password: xljpcltorjiidhfj #你的授权码：邮箱设置-》第三⽅服务-》开启IMAP/SMTP服务-》获取授权码
+    port: 465
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            trust: smtp.qq.com  # 信任QQ邮箱SSL证书
+          auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+
+
+# 图片存储路径配置
+pic:
+  local-path: F:/picture
+
+# mybatis配置
+mybatis:
+  type-handlers-package: com.test.lotterysystem.Dao.TypeHandler #设置typeHandler扫描位置
+  configuration: # 配置打印 MyBatis日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true #配置驼峰自动转换
+  mapper-locations: classpath:mapper/**Mapper.xml #设置xml文件路径
+
+mybatis-plus:
+  configuration: # 配置打印 MyBatis-plus日志
+    map-underscore-to-camel-case: true
+
+
+# 短信服务配置
+sms:
+  sign-name: 阿里云短信测试
+  access-key-id: REDACTED_CREDENTIAL
+  access-key-secret: REDACTED_CREDENTIAL
+
+#线程池
+async:
+  executor:
+    thread:
+      core_pool_size: 10
+      max_pool_size: 20
+      queue_capacity: 20
+      name:
+        prefix: async-service-
+
+

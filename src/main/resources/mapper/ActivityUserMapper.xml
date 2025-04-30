@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.lotterysystem.Dao.Mapper.ActivityUserMapper">
+
+    <insert id="batchInsertActivityUser">
+        insert into activity_user
+            (activity_id, user_id, user_name, status)
+        values
+            <foreach collection="userDOS" item="item" separator=",">
+                (#{item.activityId}, #{item.userId}, #{item.userName}, #{item.status})
+            </foreach>
+    </insert>
+
+    <select id="getActivityUserDetail" resultType="com.test.lotterysystem.Dao.DaoObject.ActivityUserDO">
+        select * from activity_user where activity_id = #{activityId}
+    </select>
+
+    <select id="batchSelectByAUIds" resultType="com.test.lotterysystem.Dao.DaoObject.ActivityUserDO">
+        select * from activity_user where activity_id = #{activityId} and user_id in
+        <foreach collection="userIds" item="userId" separator="," open="(" close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <update id="updateStatus">
+        update activity_user set status = #{status} where activity_id = #{activityId} and user_id in
+        <foreach collection="userIds" item="userId" separator="," open="(" close=")">
+            #{userId}
+        </foreach>
+    </update>
+</mapper>
